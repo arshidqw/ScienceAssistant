@@ -1,0 +1,12 @@
+{
+    "physics": {
+        "vector": {
+            "answer": "A quantity that has both magnitude and direction.\n\n formula: v = (v_x, v_y)"
+        }
+    },
+    "mathematics": {
+        "complex number": {
+            "answer": "A number that can be expressed in the form a + bi, where a and b are real numbers, and i is the imaginary unit (√-1).\",\n    \"formula\": \"z = a + bi"
+        }
+    }
+}

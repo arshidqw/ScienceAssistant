@@ -40,7 +40,7 @@ fullscreen = 0
 log_level = 2
 
 # (bool) Warn about root user
-warn_on_root = 1
+warn_on_root = 0
 
 
 [android]

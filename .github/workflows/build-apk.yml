@@ -13,13 +13,16 @@ jobs:
     container:
       image: kivy/buildozer:latest
 
+    env:
+      BUILDOZER_WARN_ON_ROOT: "0"
+      APP_ANDROID_ACCEPT_SDK_LICENSE: "1"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build APK
-        run: |
-          buildozer android debug
+        run: buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

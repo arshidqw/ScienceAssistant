@@ -2,8 +2,102 @@ import json
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LEARNED_FILE = os.path.join(BASE_DIR, "learned_knowledge.json")
 
+# ============================================================
+# LEARNED KNOWLEDGE STORAGE
+# ============================================================
+
+# Get the folder where this Python file is located.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+# ------------------------------------------------------------
+# ANDROID WRITABLE STORAGE
+# ------------------------------------------------------------
+# On Android, the APK's bundled files should not be used
+# for saving new data.
+#
+# Kivy provides user_data_dir as a writable app directory.
+# When running outside an active Kivy app, we use the project
+# folder instead.
+# ------------------------------------------------------------
+
+try:
+    from kivy.app import App
+
+    if App.get_running_app():
+
+        # Android: use Kivy's writable application directory.
+        LEARNED_FILE = os.path.join(
+            App.get_running_app().user_data_dir,
+            "learned_knowledge.json"
+        )
+
+    else:
+
+        # Normal Python/desktop testing.
+        LEARNED_FILE = os.path.join(
+            BASE_DIR,
+            "learned_knowledge.json"
+        )
+
+except Exception:
+
+    # If Kivy is unavailable, use the project directory.
+    LEARNED_FILE = os.path.join(
+        BASE_DIR,
+        "learned_knowledge.json"
+    )
+
+# ============================================================
+# FIRST-LAUNCH INITIALIZATION
+# ============================================================
+
+def initialize_learned_file():
+    """
+    Creates the writable learned-knowledge file on first launch.
+
+    The original learned_knowledge.json bundled with the project
+    is used as the initial data. After that, new knowledge is
+    saved in the writable Android application directory.
+    """
+
+    # If the writable file already exists, don't overwrite it.
+    if os.path.exists(LEARNED_FILE):
+        return
+
+    # Location of the original JSON included with the project.
+    source_file = os.path.join(
+        BASE_DIR,
+        "learned_knowledge.json"
+    )
+
+    # If the original file exists, copy its data.
+    if os.path.exists(source_file):
+
+        try:
+
+            with open(
+                source_file,
+                "r",
+                encoding="utf-8"
+            ) as source:
+
+                data = json.load(source)
+
+            # Save the initial data to the writable location.
+            save_learned(data)
+
+        except (json.JSONDecodeError, OSError):
+
+            # If the original file cannot be read,
+            # start with an empty knowledge database.
+            save_learned({})
+
+    else:
+
+        # No initial file exists, so start empty.
+        save_learned({})
 
 VALID_SUBJECTS = {
     "mathematics": "mathematics",

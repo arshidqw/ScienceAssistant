@@ -21,6 +21,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare Android SDK Tools
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
+          touch ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+
       - name: Build APK
         run: buildozer android debug
 

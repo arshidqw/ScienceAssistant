@@ -46,16 +46,16 @@ warn_on_root = 0
 [android]
 
 # (str) Android API target
-android.api = 35
+android.api = 33
 
 # (str) Android minimum API
-android.minapi = 23
+android.minapi = 21
 
 # (str) Android NDK version
-android.ndk = 27c
+android.ndk = 25b
 
 # (str) Android architecture
 android.arch = arm64-v8a
 
-# (bool) Accept Android SDK licenses
+# (bool) Accept Android SDK licenses automatically
 android.accept_sdk_license = True

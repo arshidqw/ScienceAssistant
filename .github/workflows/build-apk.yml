@@ -10,26 +10,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: kivy/buildozer:latest
-
-    env:
-      BUILDOZER_WARN_ON_ROOT: "0"
-      APP_ANDROID_ACCEPT_SDK_LICENSE: "1"
-
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Prepare Android SDK Tools
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
-          touch ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+          sudo apt-get update
+          sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git unzip zip openjdk-17-jdk targetcli-fb ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixin-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install buildozer cython
 
-      - name: Build APK
+      - name: Build APK with Buildozer
         run: buildozer android debug
+        env:
+          BUILDOZER_WARN_ON_ROOT: "0"
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ScienceAssistant-debug-apk

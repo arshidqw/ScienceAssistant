@@ -10,10 +10,10 @@ package.name = scienceassistant
 package.domain = org.arshidqw
 
 # (str) Source directory
-source.dir = ui
+source.dir = .
 
 # (str) Main entry point
-source.main = app.py
+source.main = ui/app.py
 
 # (list) Application source files
 source.include_exts = py,json,png,jpg,jpeg,kv,atlas

@@ -49,13 +49,24 @@ jobs:
             gettext
 
       - name: Prepare Android SDK
+        shell: bash
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 
-          yes | sdkmanager --licenses || true
+          SDKMANAGER=$(find "$ANDROID_HOME" -type f -name sdkmanager -perm -111 | head -n 1)
 
-          sdkmanager \
+          if [ -z "$SDKMANAGER" ]; then
+            echo "ERROR: sdkmanager was not found."
+            find "$ANDROID_HOME" -maxdepth 5 -type f | grep sdkmanager || true
+            exit 1
+          fi
+
+          echo "Using sdkmanager: $SDKMANAGER"
+
+          yes | "$SDKMANAGER" --licenses || true
+
+          "$SDKMANAGER" \
             "platform-tools" \
             "platforms;android-35" \
             "build-tools;35.0.0"
@@ -75,6 +86,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install buildozer setuptools cython==0.29.34
+
+      - name: Clean Buildozer cache
+        run: |
+          rm -rf .buildozer
+          rm -rf bin
 
       - name: Build APK
         run: |

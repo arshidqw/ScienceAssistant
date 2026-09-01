@@ -21,10 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git unzip zip openjdk-17-jdk targetcli-fb ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixin-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install buildozer cython
+          sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git unzip zip openjdk-17-jdk targetcli-fb ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
 
       - name: Build APK with Buildozer
         run: buildozer android debug

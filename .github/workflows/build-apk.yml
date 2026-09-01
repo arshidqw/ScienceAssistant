@@ -14,19 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build APK with Buildozer Action
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y build-essential libffi-dev libssl-dev ccache git unzip zip openjdk-17-jdk targetcli-fb ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-
-      - name: Build APK with Buildozer
-        run: buildozer android debug
-        env:
-          BUILDOZER_WARN_ON_ROOT: "0"
+          command: buildozer android debug
+          buildozer_version: stable
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4

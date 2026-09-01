@@ -48,6 +48,25 @@ jobs:
             autopoint \
             gettext
 
+      - name: Prepare Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+
+          yes | sdkmanager --licenses || true
+
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-35" \
+            "build-tools;35.0.0"
+
+      - name: Configure Android environment
+        run: |
+          echo "ANDROIDSDK=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK=$ANDROID_NDK_HOME" >> "$GITHUB_ENV"
+          echo "ANDROIDAPI=35" >> "$GITHUB_ENV"
+          echo "NDKAPI=24" >> "$GITHUB_ENV"
+
       - name: Install Rust
         run: |
           rustup default stable
@@ -56,28 +75,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install buildozer setuptools cython==0.29.34
-
-      - name: Prepare build environment
-        run: |
-          libtoolize --force --copy
-          autoreconf --version
-          autoconf --version
-          automake --version
-          libtool --version
-
-      - name: Accept Android SDK licenses
-        run: |
-          mkdir -p "$HOME/.android"
-          touch "$HOME/.android/repositories.cfg"
-
-          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/cmdline-tools/latest/bin" ]; then
-            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-          fi
-
-      - name: Clean previous Buildozer state
-        run: |
-          rm -rf .buildozer
-          rm -rf bin
 
       - name: Build APK
         run: |

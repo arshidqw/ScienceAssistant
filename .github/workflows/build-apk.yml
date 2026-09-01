@@ -33,7 +33,10 @@ jobs:
             zip \
             unzip \
             autoconf \
+            automake \
             libtool \
+            libtool-bin \
+            m4 \
             pkg-config \
             zlib1g-dev \
             libncurses5-dev \
@@ -42,7 +45,6 @@ jobs:
             cmake \
             libffi-dev \
             libssl-dev \
-            automake \
             autopoint \
             gettext
 
@@ -55,15 +57,32 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install buildozer setuptools cython==0.29.34
 
+      - name: Prepare build environment
+        run: |
+          libtoolize --force --copy
+          autoreconf --version
+          autoconf --version
+          automake --version
+          libtool --version
+
       - name: Accept Android SDK licenses
         run: |
           mkdir -p "$HOME/.android"
           touch "$HOME/.android/repositories.cfg"
 
+          if [ -n "$ANDROID_HOME" ] && [ -d "$ANDROID_HOME/cmdline-tools/latest/bin" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          fi
+
+      - name: Clean previous Buildozer state
+        run: |
+          rm -rf .buildozer
+          rm -rf bin
+
       - name: Build APK
         run: |
           set -o pipefail
-          yes | buildozer android debug
+          yes | buildozer -v android debug 2>&1 | tee build.log
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
